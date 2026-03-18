@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>❤️</title>
+    <style>
+        body { margin: 0; background: black; overflow: hidden; }
+        canvas { display: block; width: 100vw; height: 100vh; }
+        .love { position: absolute; bottom: 20px; left: 0; right: 0; text-align: center; color: #ff3366; font-size: 4em; font-weight: bold; text-shadow: 0 0 30px red; animation: beat 1s infinite; }
+        @keyframes beat { 0% { transform: scale(1); } 25% { transform: scale(1.1); } 50% { transform: scale(1); } 75% { transform: scale(1.05); } }
+    </style>
+</head>
+<body>
+    <canvas id="c"></canvas>
+    <div class="love">أحبك ❤️</div>
+
+    <script>
+        const canvas = document.getElementById('c');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        function rand(max) { return Math.random() * max; }
+        
+        const heartPointsCount = 200;
+        let e = [];
+        
+        for (let i = 0; i < heartPointsCount; i++) {
+            e[i] = {
+                x: rand(canvas.width),
+                y: rand(canvas.height),
+                vx: 0,
+                vy: 0,
+                R: rand(3) + 1,
+                speed: rand(3) + 2,
+                force: rand(0.5) + 0.3,
+                color: `hsl(${rand(20) + 340}, 80%, 60%)`,
+                trace: []
+            };
+        }
+        
+        function draw() {
+            ctx.fillStyle = 'rgba(0,0,0,0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            for (let p of e) {
+                p.vx += (rand() - 0.5) * p.force;
+                p.vy += (rand() - 0.5) * p.force;
+                
+                p.x += p.vx * p.speed;
+                p.y += p.vy * p.speed;
+                
+                p.vx *= 0.98;
+                p.vy *= 0.98;
+                
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
+                
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.R, 0, Math.PI*2);
+                ctx.fillStyle = p.color;
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = '#ff3366';
+                ctx.fill();
+            }
+            
+            requestAnimationFrame(draw);
+        }
+        
+        draw();
+    </script>
+</body>
+</html>
